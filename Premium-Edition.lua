@@ -1951,8 +1951,8 @@ end
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Mascara Cat Hub [ Premium ]",
-    SubTitle = "Buy babyrosts",
+    Title = "Mascara Cat Hub Premium",
+    SubTitle = "[ Blox Fruit ]",
     TabWidth = 190,
     Size = UDim2.fromOffset(555, 420),
     Acrylic = false,
@@ -1982,44 +1982,9 @@ local FarmLevel = Tabs.Main:AddToggle("FarmLevel", {
     Default = false
 })
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local plr = Players.LocalPlayer
-local Root = plr.Character:WaitForChild("HumanoidRootPart")
-local replicated = ReplicatedStorage
-local Sec = 0.3
-
-_G.Level = true
-
-local function _tp(pos)
-    if typeof(pos) == "CFrame" then
-        Root.CFrame = pos
-    elseif typeof(pos) == "Vector3" or pos:IsA("BasePart") then
-        Root.CFrame = CFrame.new(pos.Position or pos)
-    end
-end
-
-local function AttackAlive(enemy)
-    return enemy and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0
-end
-
-local function Kill(target)
-    replicated.Remotes.CommF_:InvokeServer("AttackEnemy", target)
-end
-
-local function QuestNeta()
-    return {
-        "Bandit",
-        1,
-        "BanditQuest",
-        CFrame.new(100, 10, 200),
-        "Bandit",
-        CFrame.new(50, 10, 100),
-        CFrame.new(50, 10, 100)
-    }
-end
+FarmLevel:OnChanged(function(Value)
+    _G.Level = Value
+end)
 
 spawn(function()
     while task.wait(Sec) do
@@ -2027,8 +1992,8 @@ spawn(function()
         pcall(function()
             local Quest = plr.PlayerGui.Main.Quest
             local Info = QuestNeta()
-            local QuestName, QuestId, MobName, MobPos, QuestMobName, NPCPos, DonePos =
-                Info[3], Info[2], Info[1], Info[4], Info[5], Info[6], Info[7]
+            local QuestName, QuestId, MobName, MobPos, QuestMobName, NPCPos =
+                Info[3], Info[2], Info[1], Info[4], Info[5], Info[6]
 
             if not Quest.Visible or Quest.Container.QuestTitle.Title.Text == "" then
                 _tp(NPCPos)
@@ -2048,7 +2013,7 @@ spawn(function()
 
             local Target
             for _, v in pairs(workspace.Enemies:GetChildren()) do
-                if v.Name == MobName and AttackAlive(v) then
+                if v.Name == MobName and Attack.Alive(v) then
                     Target = v
                     break
                 end
@@ -2058,22 +2023,11 @@ spawn(function()
                 repeat
                     if not _G.Level or not Target or not Target:FindFirstChild("Humanoid") then break end
                     _tp(Target.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
-                    Kill(Target)
+                    Attack.Kill(Target, _G.Level)
                     task.wait()
                 until not _G.Level or Target.Humanoid.Health <= 0 or not Target.Parent or not Quest.Visible
             else
                 _tp(MobPos)
-            end
-
-            if Quest.Visible and Quest.Container.QuestTitle.Title.Text ~= "" then
-                local Progress = Quest.Container.QuestTitle.Title.Text
-                if string.find(Progress, "Completed") or string.find(Progress, "Hoàn thành") then
-                    _tp(DonePos or NPCPos)
-                    if (Root.Position - (DonePos or NPCPos).Position).Magnitude <= 5 then
-                        replicated.Remotes.CommF_:InvokeServer("CompleteQuest", QuestName)
-                        task.wait(1.5)
-                    end
-                end
             end
         end)
     end
