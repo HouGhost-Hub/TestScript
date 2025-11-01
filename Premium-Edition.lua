@@ -10627,26 +10627,6 @@ Tabs.Misc:AddButton({
     end
 })
 
-Tabs.Misc:AddSection("Configure - God")
-Tabs.Misc:AddButton({
-    Title = "Rain Fruits (Client)",
-    Description = "",
-    Callback = function()
-        for i, v in pairs(game:GetObjects("rbxassetid://14116457355")[1]:GetChildren()) do
-            v.Parent = game.Workspace.Map
-            v:MoveTo(plr.Character.PrimaryPart.Position + Vector3.new(math.random(- 50, 50), 100, math.random(- 50, 50)))
-            if v.Fruit:FindFirstChild("AnimationController") then
-                v.Fruit:FindFirstChild("AnimationController"):LoadAnimation(v.Fruit:FindFirstChild("Idle")):Play()
-            end
-            v.Handle.Touched:Connect(function(otherPart)
-                if otherPart.Parent == plr.Character then
-                    v.Parent = plr.Backpack
-                    plr.Character.Humanoid:EquipTool(v)
-                end
-            end)
-        end
-    end
-})
 briggt1 = Tabs.Misc:AddToggle("briggt1", {
     Title = "Turn on Full Bright",
     Description = "",
@@ -10909,30 +10889,51 @@ task.spawn(function()
     end)
 end)
 Window:SelectTab(1)
-local ScreenGui = Instance.new("ScreenGui");
-local ImageButton = Instance.new("ImageButton");
-local UICorner = Instance.new("UICorner");
-local ParticleEmitter = Instance.new("ParticleEmitter");
-local TweenService = game:GetService("TweenService");
-ScreenGui.Parent = game.CoreGui;
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
-ImageButton.Parent = ScreenGui;
-ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0);
-ImageButton.BorderSizePixel = 0;
-ImageButton.Position = UDim2.new(0.120833337 - 0.1, 0, 0.0952890813 + 0.01, 0);
-ImageButton.Size = UDim2.new(0, 50, 0, 50);
-ImageButton.Draggable = true;
-ImageButton.Image = "http://www.roblox.com/asset/?id=91521936822360";
-UICorner.Parent = ImageButton;
-UICorner.CornerRadius = UDim.new(0, 12);
-ParticleEmitter.Parent = ImageButton;
-ParticleEmitter.LightEmission = 1;
-ParticleEmitter.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.1),NumberSequenceKeypoint.new(1, 0)});
-ParticleEmitter.Lifetime = NumberRange.new(0.5, 1);
-ParticleEmitter.Rate = 0;
-ParticleEmitter.Speed = NumberRange.new(5, 10);
-ParticleEmitter.Color = ColorSequence.new(Color3.fromRGB(255, 85, 255), Color3.fromRGB(85, 255, 255));
-local rotateTween = TweenService:Create(ImageButton, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation=360});
+
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+local ParticleEmitter = Instance.new("ParticleEmitter")
+local TweenService = game:GetService("TweenService")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.020833337, 0, 0.1052890813, 0)
+ImageButton.Size = UDim2.new(0, 50, 0, 50)
+ImageButton.Draggable = true
+ImageButton.Image = "http://www.roblox.com/asset/?id=103126977180359"
+
+UICorner.Parent = ImageButton
+UICorner.CornerRadius = UDim.new(0, 12)
+
+ParticleEmitter.Parent = ImageButton
+ParticleEmitter.LightEmission = 1
+ParticleEmitter.Size = NumberSequence.new({
+	NumberSequenceKeypoint.new(0, 0.1),
+	NumberSequenceKeypoint.new(1, 0)
+})
+ParticleEmitter.Lifetime = NumberRange.new(0.5, 1)
+ParticleEmitter.Rate = 0
+ParticleEmitter.Speed = NumberRange.new(5, 10)
+ParticleEmitter.Color = ColorSequence.new(
+	Color3.fromRGB(0, 170, 255), -- xanh nước biển nhạt
+	Color3.fromRGB(0, 85, 255)   -- xanh đậm
+)
+
+local rotateTween = TweenService:Create(
+	ImageButton,
+	TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+	{Rotation = 360}
+)
+
 ImageButton.MouseButton1Down:Connect(function()
-	game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game);
+	rotateTween:Play()
+	local gui = game.CoreGui:FindFirstChild("Fluent") or game.CoreGui:FindFirstChild("Mascara Cat Hub")
+	if gui then
+		gui.Enabled = not gui.Enabled
+	end
 end);
